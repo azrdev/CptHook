@@ -113,17 +113,13 @@ func ircConnection(config *viper.Viper, channelList []string) {
 	go channelReceiver(config.GetBool("use_notice"))
 
 	log.Info("Connecting to IRC server")
-	for {
-		// client.Connect() blocks while we are connected.
-		// If the the connection is dropped/broken (recognized if we don't get a PONG 30 seconds
-		// after we sent a PING) an error is returned.
-		err := client.Connect()
-		// If we manually Close() the connection, the Connect() function will exit without an error
-		if err != nil {
-			log.Warnf("Connection terminated. Reason: %s\n", err)
-		}
-		log.Warn("Reconnecting in 10 seconds...")
-		time.Sleep(10 * time.Second)
+	// client.Connect() blocks while we are connected.
+	// If the the connection is dropped/broken (recognized if we don't get a PONG 30 seconds
+	// after we sent a PING) an error is returned.
+	err := client.Connect()
+	// If we manually Close() the connection, the Connect() function will exit without an error
+	if err != nil {
+		log.Fatalf("Connection terminated. Reason: %s\n", err)
 	}
 
 }
